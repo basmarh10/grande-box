@@ -2,18 +2,51 @@ import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
+// Construit une boucle de ruban « en goutte » : part du centre du nœud,
+// s'élève, s'arrondit vers l'extérieur puis revient au centre.
+// TubeGeometry le long d'une CatmullRomCurve3 fermée = boucle pleine et
+// nette, sans les artefacts des plans tordus (problème rencontré sur Spline).
+function makeBowLoopGeometry(side = 1) {
+  const pts = [
+    new THREE.Vector3(0, 0, 0),
+    new THREE.Vector3(side * 0.16, 0.14, 0.02),
+    new THREE.Vector3(side * 0.3, 0.1, 0),
+    new THREE.Vector3(side * 0.3, -0.06, -0.02),
+    new THREE.Vector3(side * 0.12, -0.05, 0),
+  ];
+  const curve = new THREE.CatmullRomCurve3(pts, true, "catmullrom", 0.6);
+  return new THREE.TubeGeometry(curve, 48, 0.045, 12, true);
+}
+
+// Pan de ruban qui retombe du nœud le long du couvercle.
+function makeTailGeometry(side = 1) {
+  const pts = [
+    new THREE.Vector3(0, 0, 0),
+    new THREE.Vector3(side * 0.1, -0.12, 0.06),
+    new THREE.Vector3(side * 0.2, -0.26, 0.1),
+  ];
+  const curve = new THREE.CatmullRomCurve3(pts, false, "catmullrom", 0.5);
+  return new THREE.TubeGeometry(curve, 24, 0.035, 10, false);
+}
+
 // La boîte 3D animée : `openRef.current` (0 -> 1) fait glisser le couvercle
 // vers le haut et écarter le noeud, piloté depuis le scroll (voir ScrollScene).
 // On lit une ref (plutôt qu'une prop) pour animer à 60fps sans re-render React.
 export default function GiftBox3D({
   openRef,
-  boxColor = "#163828",
+  boxColor = "#D6252E",
   ribbonColor = "#D9A441",
   position = [0, 0, 0],
 }) {
   const lidRef = useRef();
   const bowLeftRef = useRef();
   const bowRightRef = useRef();
+
+  // Géométries du noeud, construites une seule fois
+  const bowLeftGeo = useMemo(() => makeBowLoopGeometry(-1), []);
+  const bowRightGeo = useMemo(() => makeBowLoopGeometry(1), []);
+  const tailLeftGeo = useMemo(() => makeTailGeometry(-1), []);
+  const tailRightGeo = useMemo(() => makeTailGeometry(1), []);
 
   const boxMaterial = useMemo(
     () =>
@@ -46,8 +79,11 @@ export default function GiftBox3D({
       lidRef.current.rotation.z = openProgress * -0.35;
     }
     if (bowLeftRef.current && bowRightRef.current) {
-      bowLeftRef.current.rotation.z = 0.5 + openProgress * 0.6;
-      bowRightRef.current.rotation.z = -0.5 - openProgress * 0.6;
+      // les boucles s'écartent et se soulèvent légèrement à l'ouverture
+      bowLeftRef.current.rotation.y = openProgress * 0.5;
+      bowRightRef.current.rotation.y = openProgress * -0.5;
+      bowLeftRef.current.rotation.z = openProgress * 0.35;
+      bowRightRef.current.rotation.z = openProgress * -0.35;
     }
   });
 
@@ -78,16 +114,16 @@ export default function GiftBox3D({
           <boxGeometry args={[0.26, 0.3, 1.74]} />
         </mesh>
 
-        {/* noeud stylisé, s'écarte quand la boîte s'ouvre */}
+        {/* noeud en vraies boucles de ruban, s'écarte quand la boîte s'ouvre */}
         <group position={[0, 0.32, 0]}>
-          <mesh ref={bowLeftRef} material={ribbonMaterial} position={[-0.18, 0, 0]}>
-            <torusGeometry args={[0.16, 0.06, 12, 24, Math.PI * 1.4]} />
-          </mesh>
-          <mesh ref={bowRightRef} material={ribbonMaterial} position={[0.18, 0, 0]}>
-            <torusGeometry args={[0.16, 0.06, 12, 24, Math.PI * 1.4]} />
-          </mesh>
+          <mesh ref={bowLeftRef} material={ribbonMaterial} geometry={bowLeftGeo} />
+          <mesh ref={bowRightRef} material={ribbonMaterial} geometry={bowRightGeo} />
+          {/* pans qui retombent */}
+          <mesh material={ribbonMaterial} geometry={tailLeftGeo} position={[0, -0.02, 0.02]} />
+          <mesh material={ribbonMaterial} geometry={tailRightGeo} position={[0, -0.02, 0.02]} />
+          {/* coeur du noeud */}
           <mesh material={ribbonMaterial}>
-            <sphereGeometry args={[0.1, 16, 16]} />
+            <sphereGeometry args={[0.09, 16, 16]} />
           </mesh>
         </group>
       </group>

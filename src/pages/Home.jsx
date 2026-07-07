@@ -1,8 +1,10 @@
-import { useEffect, useRef } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import Reveal from "../components/Reveal";
-import ScrollScene from "../three/ScrollScene";
+
+// Chargé en lazy : Three.js (~1 Mo) ne bloque plus le premier affichage du site.
+const ScrollScene = lazy(() => import("../three/ScrollScene"));
 import { useLenis } from "../lib/useLenis";
 import { initScrollProgress } from "../lib/scrollProgress";
 import { products } from "../data/products";
@@ -28,7 +30,9 @@ export default function Home() {
   return (
     <div ref={pageRef} className="relative">
       {/* Canvas 3D fixe en fond, piloté par le scroll de toute la page */}
-      <ScrollScene />
+      <Suspense fallback={null}>
+        <ScrollScene />
+      </Suspense>
 
       {/* Hero : la boîte s'ouvre et les ballons s'envolent en scrollant */}
       <section className="relative min-h-[100svh] flex flex-col justify-center">

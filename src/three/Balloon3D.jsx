@@ -4,7 +4,7 @@ import * as THREE from "three";
 // Un ballon 3D "réaliste" : sphère légèrement étirée + noeud + ficelle.
 // Le matériau physique (clearcoat) imite le fini satiné du latex sous la lumière.
 export default function Balloon3D({
-  color = "#E8583F",
+  color = "#F2A9B4",
   position = [0, 0, 0],
   rotation = [0, 0, 0],
   scale = 1,

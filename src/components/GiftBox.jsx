@@ -2,9 +2,9 @@
 // Évite de dépendre de vraies photos produit (à faire plus tard, voir le guide de développement).
 
 const TONES = {
-  forest: { box: "#163828", ribbon: "#D9A441" },
-  gold: { box: "#D9A441", ribbon: "#163828" },
-  coral: { box: "#E8583F", ribbon: "#FBF6EC" },
+  forest: { box: "#111111", ribbon: "#D9A441" },
+  gold: { box: "#D9A441", ribbon: "#111111" },
+  coral: { box: "#D6252E", ribbon: "#F8F3E9" },
 };
 
 export default function GiftBox({ tone = "forest", className = "" }) {

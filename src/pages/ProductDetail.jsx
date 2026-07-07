@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import GiftBox from "../components/GiftBox";
+import BubbleText from "../components/BubbleText";
 import { getProductById } from "../data/products";
 import { useCart } from "../context/CartContext";
 
-const COLOR_OPTIONS = ["Vert forêt", "Doré", "Corail", "Sur-mesure"];
+const COLOR_OPTIONS = ["Noir & or", "Doré", "Rouge", "Sur-mesure"];
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -14,6 +15,7 @@ export default function ProductDetail() {
 
   const [color, setColor] = useState(COLOR_OPTIONS[0]);
   const [message, setMessage] = useState("");
+  const [recipientName, setRecipientName] = useState("");
 
   if (!product) {
     return (
@@ -35,7 +37,13 @@ export default function ProductDetail() {
 
   return (
     <section className="container-page py-16 md:py-20 grid md:grid-cols-2 gap-14">
-      <div className="bg-cream-soft rounded-xl2 flex items-center justify-center p-16">
+      <div className="bg-cream-soft rounded-xl2 flex flex-col items-center justify-center gap-6 p-16">
+        {/* Aperçu en direct du prénom en lettres bulle glossy */}
+        <BubbleText
+          text={recipientName}
+          tone="rouge"
+          className="text-4xl md:text-5xl"
+        />
         <GiftBox tone={product.color} className="w-full max-w-xs" />
       </div>
 
@@ -80,6 +88,20 @@ export default function ProductDetail() {
                 </button>
               ))}
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-forest mb-2">
+              Prénom sur la box (facultatif)
+            </label>
+            <input
+              type="text"
+              value={recipientName}
+              onChange={(e) => setRecipientName(e.target.value)}
+              maxLength={18}
+              placeholder="Ex. : Sarah — aperçu en direct à gauche"
+              className="w-full rounded-xl border border-forest/20 p-3 text-sm focus:border-forest outline-none"
+            />
           </div>
 
           <div>
