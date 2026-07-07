@@ -128,10 +128,10 @@ export default function Home() {
             </div>
           </Reveal>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
             {products.map((p, i) => (
-              <Reveal key={p.id} delay={Math.min(i, 3) * 0.06}>
-                <ProductCard product={p} />
+              <Reveal key={p.id} delay={Math.min(i, 3) * 0.06} className="h-full">
+                <ProductCard product={p} floatDelay={i * 0.9} />
               </Reveal>
             ))}
           </div>

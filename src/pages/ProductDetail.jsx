@@ -1,6 +1,6 @@
 import { useState } from "react";
+import "../components/ProductCard.css";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import GiftBox from "../components/GiftBox";
 import BubbleText from "../components/BubbleText";
 import { getProductById } from "../data/products";
 import { useCart } from "../context/CartContext";
@@ -37,14 +37,18 @@ export default function ProductDetail() {
 
   return (
     <section className="container-page py-16 md:py-20 grid md:grid-cols-2 gap-14">
-      <div className="bg-cream-soft rounded-xl2 flex flex-col items-center justify-center gap-6 p-16">
-        {/* Aperçu en direct du prénom en lettres bulle glossy */}
+      <div className="bg-cream-soft rounded-xl2 flex flex-col items-center justify-center gap-6 p-12 md:p-16">
+        {/* Aperçu en direct du prénom (uniquement si un prénom est tapé) */}
         <BubbleText
           text={recipientName}
           tone="rouge"
           className="text-4xl md:text-5xl"
         />
-        <GiftBox tone={product.color} className="w-full max-w-xs" />
+        <img
+          src={product.image}
+          alt={product.name}
+          className="product-card__img w-full max-w-sm object-contain"
+        />
       </div>
 
       <div>

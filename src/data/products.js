@@ -5,6 +5,7 @@
 export const products = [
   {
     id: "box-m",
+    image: "/images/box-m.webp",
     size: "M",
     name: "Grande Box — Taille M",
     tagline: "L'effet surprise, format compact",
@@ -16,6 +17,7 @@ export const products = [
   },
   {
     id: "box-l",
+    image: "/images/box-l.webp",
     size: "L",
     name: "Grande Box — Taille L",
     tagline: "Le format le plus demandé",
@@ -27,6 +29,7 @@ export const products = [
   },
   {
     id: "box-xl",
+    image: "/images/box-xl.webp",
     size: "XL",
     name: "Grande Box — Taille XL",
     tagline: "Pour marquer les esprits",
@@ -38,6 +41,7 @@ export const products = [
   },
   {
     id: "box-xxl",
+    image: "/images/box-xxl.webp",
     size: "XXL",
     name: "Grande Box — Taille XXL",
     tagline: "L'expérience ultime",

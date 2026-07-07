@@ -1,0 +1,42 @@
+/* Carte produit — tilt 3D qui suit la souris + flottement doux de la photo.
+   Le tilt est appliqué via variables CSS mises à jour en JS (voir ProductCard.jsx),
+   la transition lisse le mouvement pour un rendu fluide, jamais saccadé. */
+
+.product-card {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y))
+    translateY(0);
+  transform-style: preserve-3d;
+  transition:
+    transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 0.35s ease;
+  will-change: transform;
+}
+
+.product-card:hover {
+  transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y))
+    translateY(-6px);
+  box-shadow:
+    0 24px 48px -16px rgba(26, 23, 20, 0.22),
+    0 6px 16px -8px rgba(214, 37, 46, 0.12);
+}
+
+/* La photo « sort » légèrement de la carte au survol (profondeur réelle du tilt) */
+.product-card__img {
+  transform: translateZ(0);
+  transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+  filter: drop-shadow(0 14px 18px rgba(26, 23, 20, 0.18));
+  animation: card-float 5.5s ease-in-out infinite;
+  animation-delay: var(--float-delay, 0s);
+}
+
+.product-card:hover .product-card__img {
+  transform: translateZ(42px) scale(1.04);
+}
+
+/* Flottement d'ambiance, léger et continu */
+@keyframes card-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -7px; }
+}

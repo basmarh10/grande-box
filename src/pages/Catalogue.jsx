@@ -1,4 +1,5 @@
 import ProductCard from "../components/ProductCard";
+import Reveal from "../components/Reveal";
 import { products } from "../data/products";
 
 export default function Catalogue() {
@@ -16,9 +17,11 @@ export default function Catalogue() {
         reste ensemble.
       </p>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {products.map((p) => (
-          <ProductCard key={p.id} product={p} />
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+        {products.map((p, i) => (
+          <Reveal key={p.id} delay={i * 0.12} className="h-full">
+            <ProductCard product={p} floatDelay={i * 0.9} />
+          </Reveal>
         ))}
       </div>
     </section>

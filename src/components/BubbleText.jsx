@@ -11,7 +11,9 @@
 import "./BubbleText.css";
 
 export default function BubbleText({ text, tone = "rouge", className = "" }) {
-  const content = (text || "").trim() || "Cadeau";
+  const content = (text || "").trim();
+  // Rien à afficher tant que le client n'a rien tapé — pas de texte fantôme.
+  if (!content) return null;
   return (
     <span
       className={`bubble-text bubble-text--${tone} ${className}`}
