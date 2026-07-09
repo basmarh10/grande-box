@@ -8,7 +8,7 @@ import { useCart } from "../context/CartContext";
 // lazy pour ne pas alourdir le premier rendu de la fiche.
 const ProductScene3D = lazy(() => import("../three/ProductScene3D"));
 
-const COLOR_OPTIONS = ["Noir & or", "Doré", "Rouge", "Sur-mesure"];
+const COLOR_OPTIONS = ["Corail", "Turquoise", "Violet", "Prune & or", "Sur-mesure"];
 
 export default function ProductDetail() {
   const { id } = useParams();

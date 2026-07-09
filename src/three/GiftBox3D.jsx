@@ -42,9 +42,10 @@ function makeTailGeometry(side = 1) {
  */
 export default function GiftBox3D({
   openRef,
-  boxColor = "#D6252E",
-  ribbonColor = "#D9A441",
+  boxColor = "#F0483D",
+  ribbonColor = "#E8B84B",
   position = [0, 0, 0],
+  lidDrift = 0.85, // décalage latéral du couvercle ouvert (réduit sur la fiche produit pour rester dans le cadre)
 }) {
   const lidRef = useRef();
   const bowLeftRef = useRef();
@@ -87,9 +88,11 @@ export default function GiftBox3D({
   useFrame(() => {
     const openProgress = openRef?.current ?? 0;
     if (lidRef.current) {
-      lidRef.current.position.y = 0.62 + openProgress * 1.15;
-      lidRef.current.rotation.z = openProgress * -0.4;
-      lidRef.current.rotation.x = openProgress * 0.12;
+      // le couvercle décolle franchement, bascule (~63°) et se pousse de côté
+      lidRef.current.position.y = 0.62 + openProgress * 1.85;
+      lidRef.current.position.x = openProgress * lidDrift;
+      lidRef.current.rotation.z = openProgress * -1.1;
+      lidRef.current.rotation.x = openProgress * 0.15;
     }
     if (bowLeftRef.current && bowRightRef.current) {
       bowLeftRef.current.rotation.y = openProgress * 0.5;

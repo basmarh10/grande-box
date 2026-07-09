@@ -1,8 +1,9 @@
 // Données de démonstration — à remplacer par de vraies données (Supabase) à l'étape 7 du guide.
 // Catalogue organisé par TAILLE, volontairement sans catégorie par type d'événement.
 //
-// Couleurs des box : STRICTEMENT la palette du site (Checkpoint 0 bis) —
-// crème #F8F3E9, corail/rouge ruban #D6252E, doré #D9A441, noir #111111.
+// Couleurs des box : palette v3 — une dominante par taille pour lire la
+// gamme d'un coup d'œil, ruban OR (#E8B84B) sur toutes :
+// M corail, L turquoise, XL violet, XXL prune.
 // `sizeRatio` = côté réel / côté du XXL (130 cm) : pilote la taille du visuel
 // dans les cartes du catalogue pour que M < L < XL < XXL se voie d'un coup d'œil.
 
@@ -13,8 +14,8 @@ export const products = [
     size: "M",
     sizeCm: 50,
     sizeRatio: 50 / 130,
-    boxColor: "#F8F3E9",     // crème
-    ribbonColor: "#D6252E",  // ruban corail
+    boxColor: "#F0483D",     // corail
+    ribbonColor: "#E8B84B",  // ruban or
     accent: "coral",
     name: "Grande Box — Taille M",
     tagline: "L'effet surprise, format compact",
@@ -29,9 +30,9 @@ export const products = [
     size: "L",
     sizeCm: 70,
     sizeRatio: 70 / 130,
-    boxColor: "#D6252E",     // corail
-    ribbonColor: "#D9A441",  // ruban doré
-    accent: "gold",
+    boxColor: "#2EC4B6",     // turquoise
+    ribbonColor: "#E8B84B",  // ruban or
+    accent: "turquoise",
     name: "Grande Box — Taille L",
     tagline: "Le format le plus demandé",
     price: 89,
@@ -45,9 +46,9 @@ export const products = [
     size: "XL",
     sizeCm: 100,
     sizeRatio: 100 / 130,
-    boxColor: "#D9A441",     // doré
-    ribbonColor: "#111111",  // ruban noir
-    accent: "gold",
+    boxColor: "#8E5FD1",     // violet
+    ribbonColor: "#E8B84B",  // ruban or
+    accent: "violet",
     name: "Grande Box — Taille XL",
     tagline: "Pour marquer les esprits",
     price: 129,
@@ -61,9 +62,9 @@ export const products = [
     size: "XXL",
     sizeCm: 130,
     sizeRatio: 1,
-    boxColor: "#111111",     // noir
-    ribbonColor: "#D9A441",  // ruban doré
-    accent: "noir",
+    boxColor: "#4A1942",     // prune
+    ribbonColor: "#E8B84B",  // ruban or
+    accent: "forest",
     name: "Grande Box — Taille XXL",
     tagline: "L'expérience ultime",
     price: 189,

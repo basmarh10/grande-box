@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
 import Header from "./components/Header";
+import IntroBalloons from "./components/IntroBalloons";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Catalogue from "./pages/Catalogue";
@@ -8,13 +9,15 @@ import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
 import Contact from "./pages/Contact";
 
-// L'ancienne intro à clic (BoxIntro.jsx) est remplacée par l'ouverture de la
-// boîte pilotée au scroll, directement dans Home (voir src/three/ScrollScene.jsx).
-// Le fichier BoxIntro.jsx n'est plus utilisé et peut être supprimé.
+// Intro « grands ballons » (IntroBalloons.jsx) : jouée une seule fois par
+// navigateur (localStorage), forçable avec ?intro=1 pour la QA.
+// L'ancien BoxIntro.jsx (Framer Motion) n'est plus utilisé : à supprimer,
+// avec src/components/Balloon.jsx que lui seul importait.
 
 export default function App() {
   return (
     <CartProvider>
+      <IntroBalloons />
       <Header />
       <main>
         <Routes>

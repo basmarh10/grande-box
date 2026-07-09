@@ -5,9 +5,9 @@ import "./ProductCard.css";
 // Cadres colorés par box : chaque taille a sa teinte (palette du site),
 // ce qui rend le catalogue coloré tout en restant cohérent.
 const FRAME_TINTS = {
-  "box-m": "from-rose/30 via-cream-soft to-cream-soft",
-  "box-l": "from-coral/15 via-cream-soft to-cream-soft",
-  "box-xl": "from-gold/30 via-cream-soft to-cream-soft",
+  "box-m": "from-coral/15 via-cream-soft to-cream-soft",
+  "box-l": "from-turquoise/20 via-cream-soft to-cream-soft",
+  "box-xl": "from-violet/20 via-cream-soft to-cream-soft",
   "box-xxl": "from-forest/15 via-cream-soft to-cream-soft",
 };
 

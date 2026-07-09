@@ -8,7 +8,7 @@ import * as THREE from "three";
  * fireRef.current?.() — les confettis jaillissent puis retombent en
  * tournoyant et disparaissent. Palette du site uniquement.
  */
-const COLORS = ["#D6252E", "#D9A441", "#F2A9B4", "#FFFDF8", "#111111"];
+const COLORS = ["#F0483D", "#2EC4B6", "#FFC93C", "#8E5FD1", "#FF6FA0", "#E8B84B"];
 const COUNT = 90;
 const GRAVITY = -3.2;
 const LIFE = 2.6;

@@ -1,0 +1,88 @@
+/* Écran d'intro « grands ballons » — voir IntroBalloons.jsx */
+
+.ib-root {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #FBF5EA; /* crème (token cream) */
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.ib-title {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  pointer-events: none;
+  text-align: center;
+}
+
+.ib-title-main {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 600;
+  font-size: clamp(2.6rem, 7vw, 5.5rem);
+  color: #4A1942; /* prune */
+  line-height: 1;
+}
+
+.ib-title-sub {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: clamp(0.8rem, 1.6vw, 1rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(61, 32, 56, 0.55);
+}
+
+/* Ballon : dégradé radial glossy (point de lumière en haut à gauche),
+   forme légèrement piriforme, nœud + ficelle. */
+.ib-balloon {
+  position: absolute;
+  bottom: 0;
+  transform: translateY(110vh);
+  border-radius: 50% 50% 50% 50% / 54% 54% 46% 46%;
+  background:
+    radial-gradient(circle at 32% 26%,
+      rgba(255, 255, 255, 0.85) 0%,
+      rgba(255, 255, 255, 0.28) 18%,
+      var(--ib-color) 52%,
+      color-mix(in srgb, var(--ib-color) 72%, #000) 100%);
+  box-shadow: inset -14px -18px 30px rgba(0, 0, 0, 0.12);
+  will-change: transform;
+}
+
+.ib-knot {
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 12px solid color-mix(in srgb, var(--ib-color) 80%, #000);
+}
+
+.ib-string {
+  position: absolute;
+  left: 50%;
+  bottom: -90px;
+  width: 1.5px;
+  height: 82px;
+  background: rgba(61, 32, 56, 0.35);
+}
+
+.ib-skip {
+  position: absolute;
+  bottom: 1.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(61, 32, 56, 0.45);
+}

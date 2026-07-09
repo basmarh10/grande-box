@@ -50,7 +50,7 @@ export default function Home() {
               Nos box cadeaux géantes s'adaptent à vous, pas l'inverse. Choisissez une
               taille, personnalisez le reste — et scrollez pour l'ouvrir.
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 mb-9">
               <Link
                 to="/nos-box"
                 className="pointer-events-auto rounded-full bg-coral text-cream px-7 py-3.5 font-medium hover:brightness-110 shadow-lg shadow-coral/25 transition"
@@ -64,15 +64,18 @@ export default function Home() {
                 Une demande particulière ?
               </Link>
             </div>
+
+            {/* Indices d'interaction : juste sous les CTA, donc TOUJOURS dans
+                le premier écran, quelle que soit la résolution. */}
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-ink/50">
+              <span className="uppercase tracking-[0.2em] animate-bounce">Scrollez ↓ pour ouvrir la boîte</span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-coral" aria-hidden />
+                Psst… cliquez sur les ballons 🎈
+              </span>
+            </div>
           </div>
         </div>
-
-        <p className="absolute bottom-8 left-1/2 -translate-x-1/2 text-xs uppercase tracking-[0.2em] text-ink/40 animate-bounce text-center">
-          Scrollez ↓
-        </p>
-        <p className="absolute bottom-20 left-1/2 -translate-x-1/2 text-xs text-ink/40 text-center whitespace-nowrap">
-          Psst… cliquez sur les ballons 🎈
-        </p>
       </section>
 
       {/* La boîte a fini de s'ouvrir, les ballons s'envolent : on enchaîne sur le récit */}
@@ -108,8 +111,8 @@ export default function Home() {
             {STEPS.map((step, i) => (
               <Reveal key={step.n} delay={i * 0.08}>
                 <p
-                  className={`font-display text-2xl mb-4 w-14 h-14 rounded-full flex items-center justify-center text-cream shadow-md ${
-                    ["bg-coral", "bg-gold", "bg-rose", "bg-forest"][i % 4]
+                  className={`font-display text-2xl mb-4 w-14 h-14 rounded-full flex items-center justify-center shadow-md ${
+                    ["bg-coral text-cream", "bg-turquoise text-cream", "bg-violet text-cream", "bg-sun text-forest"][i % 4]
                   }`}
                 >
                   {step.n}

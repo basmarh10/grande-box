@@ -5,6 +5,7 @@ import * as THREE from "three";
 import GiftBox3D from "./GiftBox3D";
 import Balloon3D from "./Balloon3D";
 import Confetti from "./Confetti";
+import BoxContents from "./BoxContents";
 
 /*
  * Scène 3D interactive de la fiche produit.
@@ -22,7 +23,7 @@ const BALLOON_SET = [
 ];
 
 function BALLOON_COLORS(ribbonColor) {
-  return [ribbonColor, "#F2A9B4", "#D6252E", "#D9A441", "#FFFDF8"];
+  return [ribbonColor, "#FF6FA0", "#2EC4B6", "#FFC93C", "#8E5FD1"];
 }
 
 function Scene({ boxColor, ribbonColor, openTarget, onToggle }) {
@@ -51,7 +52,7 @@ function Scene({ boxColor, ribbonColor, openTarget, onToggle }) {
       const targetX = -state.pointer.y * 0.12;
       groupRef.current.rotation.y = THREE.MathUtils.damp(groupRef.current.rotation.y, targetY, 4, delta);
       groupRef.current.rotation.x = THREE.MathUtils.damp(groupRef.current.rotation.x, targetX, 4, delta);
-      groupRef.current.position.y = Math.sin(t * 0.8) * 0.03 - 0.15;
+      groupRef.current.position.y = Math.sin(t * 0.8) * 0.03 - 0.5;
     }
 
     // ballons : sortent de la boîte, montent et flottent
@@ -79,12 +80,10 @@ function Scene({ boxColor, ribbonColor, openTarget, onToggle }) {
         onPointerOver={() => { document.body.style.cursor = "pointer"; }}
         onPointerOut={() => { document.body.style.cursor = "auto"; }}
       >
-        <GiftBox3D openRef={openRef} boxColor={boxColor} ribbonColor={ribbonColor} />
-        {/* intérieur : papier de soie sombre, visible à l'ouverture */}
-        <mesh position={[0, 0.3, 0]}>
-          <boxGeometry args={[1.45, 0.5, 1.45]} />
-          <meshStandardMaterial color="#241f1a" roughness={0.9} />
-        </mesh>
+        <GiftBox3D openRef={openRef} boxColor={boxColor} ribbonColor={ribbonColor} lidDrift={0.3} />
+        {/* contenu intérieur partagé avec la home : mini-cadeaux, rubans,
+            sparkles — plus jamais un panneau plat vide */}
+        <BoxContents openRef={openRef} position={[0, 0.5, 0]} />
         {BALLOON_SET.map((b, i) => (
           <group key={i} ref={(el) => (balloonRefs.current[i] = el)} visible={false}>
             <Balloon3D color={BALLOON_COLORS(ribbonColor)[i]} scale={b.scale} stringLength={0.6} />
@@ -92,7 +91,7 @@ function Scene({ boxColor, ribbonColor, openTarget, onToggle }) {
         ))}
         <Confetti fireRef={confettiFire} origin={[0, 0.7, 0]} />
       </group>
-      <ContactShadows position={[0, -0.85, 0]} opacity={0.35} scale={5} blur={2.4} far={2} />
+      <ContactShadows position={[0, -1.15, 0]} opacity={0.35} scale={5} blur={2.4} far={2} />
     </group>
   );
 }
@@ -110,17 +109,24 @@ export default function ProductScene3D({ boxColor = "#D6252E", ribbonColor = "#D
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="relative w-full aspect-square">
+    <div className="relative w-full aspect-[4/5]">
       <Canvas
         shadows
-        camera={{ position: [0, 0.9, 4.4], fov: 38 }}
+        camera={{ position: [0, 0.85, 5.6], fov: 40 }}
         dpr={[1, 1.8]}
         gl={{ alpha: true, antialias: true }}
         style={{ background: "transparent" }}
       >
         <ambientLight intensity={0.55} />
         <hemisphereLight args={["#fff8ec", "#e8d9bd", 1.1]} />
-        <directionalLight position={[3, 5, 2]} intensity={1.5} castShadow shadow-mapSize={[1024, 1024]} />
+        <directionalLight
+          position={[3, 5, 2]}
+          intensity={1.5}
+          castShadow
+          shadow-mapSize={[2048, 2048]}
+          shadow-bias={-0.0004}
+          shadow-normalBias={0.06}
+        />
         <pointLight position={[-4, 2.5, 3]} intensity={14} color="#FFF3E0" />
         <pointLight position={[0, 3, -4]} intensity={10} color="#FFE8EC" />
         <spotLight position={[0, 1.6, 5.5]} angle={0.7} penumbra={1} intensity={20} />
