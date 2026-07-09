@@ -4,7 +4,10 @@ import { products } from "../data/products";
 
 export default function Catalogue() {
   return (
-    <section className="container-page py-16 md:py-20">
+    <section className="relative overflow-hidden">
+      <div aria-hidden className="pointer-events-none absolute -top-24 -left-28 w-96 h-96 rounded-full bg-coral/10 blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute top-40 -right-28 w-96 h-96 rounded-full bg-gold/15 blur-3xl" />
+      <div className="container-page relative py-16 md:py-20">
       <p className="text-xs font-semibold tracking-widest uppercase text-coral mb-3">
         Nos Box
       </p>
@@ -23,6 +26,7 @@ export default function Catalogue() {
             <ProductCard product={p} floatDelay={i * 0.9} />
           </Reveal>
         ))}
+      </div>
       </div>
     </section>
   );

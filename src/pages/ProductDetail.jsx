@@ -1,9 +1,12 @@
-import { useState } from "react";
-import "../components/ProductCard.css";
+import { lazy, Suspense, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import BubbleText from "../components/BubbleText";
 import { getProductById } from "../data/products";
 import { useCart } from "../context/CartContext";
+
+// Scène 3D interactive (clic = ouverture + ballons + confettis), chargée en
+// lazy pour ne pas alourdir le premier rendu de la fiche.
+const ProductScene3D = lazy(() => import("../three/ProductScene3D"));
 
 const COLOR_OPTIONS = ["Noir & or", "Doré", "Rouge", "Sur-mesure"];
 
@@ -37,18 +40,28 @@ export default function ProductDetail() {
 
   return (
     <section className="container-page py-16 md:py-20 grid md:grid-cols-2 gap-14">
-      <div className="bg-cream-soft rounded-xl2 flex flex-col items-center justify-center gap-6 p-12 md:p-16">
+      <div className="relative bg-gradient-to-br from-rose/25 via-cream-soft to-gold/20 rounded-xl2 flex flex-col items-center justify-center gap-2 p-6 md:p-10 h-fit md:sticky md:top-28">
         {/* Aperçu en direct du prénom (uniquement si un prénom est tapé) */}
         <BubbleText
           text={recipientName}
           tone="rouge"
           className="text-4xl md:text-5xl"
         />
-        <img
-          src={product.image}
-          alt={product.name}
-          className="product-card__img w-full max-w-sm object-contain"
-        />
+        {/* Vraie scène 3D : cliquez sur la boîte -> couvercle + ballons + confettis */}
+        <Suspense
+          fallback={
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full max-w-sm object-contain"
+            />
+          }
+        >
+          <ProductScene3D
+            boxColor={product.boxColor}
+            ribbonColor={product.ribbonColor}
+          />
+        </Suspense>
       </div>
 
       <div>
@@ -124,7 +137,7 @@ export default function ProductDetail() {
 
         <button
           onClick={handleAdd}
-          className="w-full md:w-auto rounded-full bg-forest text-cream px-8 py-3.5 font-medium hover:bg-forest-light transition-colors"
+          className="w-full md:w-auto rounded-full bg-coral text-cream px-8 py-3.5 font-medium hover:brightness-110 transition"
         >
           Ajouter au panier
         </button>

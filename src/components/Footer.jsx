@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 export default function Footer() {
   return (
     <footer className="bg-forest text-cream mt-24">
+      <div aria-hidden className="h-1.5 bg-gradient-to-r from-coral via-gold to-rose" />
       <div className="container-page py-16 grid gap-12 md:grid-cols-3">
         <div>
           <p className="font-display text-2xl mb-3">Grande Box</p>

@@ -1,0 +1,17 @@
+<!doctype html>
+<!-- Outil interne : rend une box 3D seule sur fond transparent, pour générer
+     les visuels détourés du catalogue (voir src/render-box-entry.jsx).
+     Usage : /box-render.html?box=F8F3E9&ribbon=D6252E — puis capture d'écran
+     avec fond omis. Non référencé par le site. -->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      html, body, #root { margin: 0; width: 900px; height: 900px; background: transparent; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/render-box-entry.jsx"></script>
+  </body>
+</html>

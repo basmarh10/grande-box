@@ -33,11 +33,11 @@ export default function Header() {
 
         <Link
           to="/panier"
-          className="relative inline-flex items-center gap-2 rounded-full bg-forest text-cream px-5 py-2.5 text-sm font-medium hover:bg-forest-light transition-colors"
+          className="relative inline-flex items-center gap-2 rounded-full bg-coral text-cream px-5 py-2.5 text-sm font-medium hover:brightness-110 transition"
         >
           Panier
           {count > 0 && (
-            <span className="inline-flex items-center justify-center w-5 h-5 text-xs rounded-full bg-coral text-cream">
+            <span className="inline-flex items-center justify-center w-5 h-5 text-xs rounded-full bg-forest text-cream">
               {count}
             </span>
           )}

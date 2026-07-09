@@ -35,7 +35,9 @@ export default function Home() {
       </Suspense>
 
       {/* Hero : la boîte s'ouvre et les ballons s'envolent en scrollant */}
-      <section className="relative min-h-[100svh] flex flex-col justify-center">
+      {/* pointer-events-none : les clics traversent le hero jusqu'aux ballons
+          3D (éclatables) ; seuls les liens/boutons re-capturent la souris. */}
+      <section className="relative min-h-[100svh] flex flex-col justify-center pointer-events-none">
         <div className="container-page">
           <div className="max-w-xl">
             <span className="inline-block text-xs font-semibold tracking-wide uppercase text-coral bg-coral/10 backdrop-blur px-3 py-1 rounded-full mb-6">
@@ -51,13 +53,13 @@ export default function Home() {
             <div className="flex flex-wrap gap-4">
               <Link
                 to="/nos-box"
-                className="rounded-full bg-forest text-cream px-7 py-3.5 font-medium hover:bg-forest-light transition-colors"
+                className="pointer-events-auto rounded-full bg-coral text-cream px-7 py-3.5 font-medium hover:brightness-110 shadow-lg shadow-coral/25 transition"
               >
                 Découvrir nos box
               </Link>
               <Link
                 to="/contact"
-                className="rounded-full border border-forest text-forest px-7 py-3.5 font-medium hover:bg-forest hover:text-cream transition-colors"
+                className="pointer-events-auto rounded-full border border-forest text-forest px-7 py-3.5 font-medium hover:bg-forest hover:text-cream transition-colors"
               >
                 Une demande particulière ?
               </Link>
@@ -65,8 +67,11 @@ export default function Home() {
           </div>
         </div>
 
-        <p className="absolute bottom-8 left-1/2 -translate-x-1/2 text-xs uppercase tracking-[0.2em] text-ink/40 animate-bounce">
+        <p className="absolute bottom-8 left-1/2 -translate-x-1/2 text-xs uppercase tracking-[0.2em] text-ink/40 animate-bounce text-center">
           Scrollez ↓
+        </p>
+        <p className="absolute bottom-20 left-1/2 -translate-x-1/2 text-xs text-ink/40 text-center whitespace-nowrap">
+          Psst… cliquez sur les ballons 🎈
         </p>
       </section>
 
@@ -74,7 +79,7 @@ export default function Home() {
       <section className="relative min-h-[70vh] flex items-center">
         <div className="container-page grid md:grid-cols-2 gap-12">
           <div />
-          <Reveal>
+          <Reveal className="bg-ivory/70 backdrop-blur rounded-xl2 p-8 border-l-4 border-coral shadow-sm">
             <p className="text-xs font-semibold tracking-widest uppercase text-coral mb-3">
               L'effet Grande Box
             </p>
@@ -90,7 +95,7 @@ export default function Home() {
       </section>
 
       {/* Comment ça marche */}
-      <section className="relative bg-cream-soft/95 backdrop-blur-sm py-24">
+      <section className="relative bg-gradient-to-b from-rose/30 via-cream-soft/95 to-gold/15 backdrop-blur-sm py-24 overflow-hidden">
         <div className="container-page">
           <Reveal>
             <p className="text-xs font-semibold tracking-widest uppercase text-coral mb-3">
@@ -102,7 +107,13 @@ export default function Home() {
           <div className="grid md:grid-cols-4 gap-10">
             {STEPS.map((step, i) => (
               <Reveal key={step.n} delay={i * 0.08}>
-                <p className="font-display text-4xl text-gold mb-4">{step.n}</p>
+                <p
+                  className={`font-display text-2xl mb-4 w-14 h-14 rounded-full flex items-center justify-center text-cream shadow-md ${
+                    ["bg-coral", "bg-gold", "bg-rose", "bg-forest"][i % 4]
+                  }`}
+                >
+                  {step.n}
+                </p>
                 <h3 className="font-display text-xl text-forest mb-2">{step.title}</h3>
                 <p className="text-sm text-ink/60 leading-relaxed">{step.text}</p>
               </Reveal>
@@ -112,8 +123,10 @@ export default function Home() {
       </section>
 
       {/* Produits phares */}
-      <section className="relative bg-cream py-24">
-        <div className="container-page">
+      <section className="relative bg-cream py-24 overflow-hidden">
+        <div aria-hidden className="pointer-events-none absolute -top-20 -left-24 w-80 h-80 rounded-full bg-coral/10 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute bottom-0 -right-24 w-96 h-96 rounded-full bg-gold/15 blur-3xl" />
+        <div className="container-page relative">
           <Reveal>
             <div className="flex items-end justify-between mb-12 flex-wrap gap-4">
               <div>
@@ -122,7 +135,7 @@ export default function Home() {
                 </p>
                 <h2 className="text-3xl md:text-4xl">Une taille pour chaque envie</h2>
               </div>
-              <Link to="/nos-box" className="text-forest font-medium hover:underline">
+              <Link to="/nos-box" className="text-coral font-medium hover:underline">
                 Voir tout le catalogue →
               </Link>
             </div>
@@ -142,7 +155,10 @@ export default function Home() {
       <section className="relative bg-cream py-4 pb-24">
         <div className="container-page">
           <Reveal>
-            <div className="bg-forest rounded-xl2 px-10 py-16 text-center">
+            <div className="relative overflow-hidden bg-forest rounded-xl2 px-10 py-16 text-center">
+              <div aria-hidden className="pointer-events-none absolute -top-16 -left-16 w-64 h-64 rounded-full bg-coral/25 blur-3xl" />
+              <div aria-hidden className="pointer-events-none absolute -bottom-20 -right-10 w-72 h-72 rounded-full bg-gold/25 blur-3xl" />
+              <div className="relative">
               <h2 className="text-cream text-3xl md:text-4xl mb-4">Prêt à faire sensation ?</h2>
               <p className="text-cream/70 mb-8 max-w-md mx-auto">
                 Dites-nous pour quelle occasion — ou pour aucune occasion en particulier —
@@ -154,6 +170,7 @@ export default function Home() {
               >
                 Parlons de votre box
               </Link>
+              </div>
             </div>
           </Reveal>
         </div>

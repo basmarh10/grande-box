@@ -1,52 +1,72 @@
 // Données de démonstration — à remplacer par de vraies données (Supabase) à l'étape 7 du guide.
-// Catalogue organisé par TAILLE, volontairement sans catégorie par type d'événement :
-// chaque box est présentée comme personnalisable pour n'importe quelle occasion.
+// Catalogue organisé par TAILLE, volontairement sans catégorie par type d'événement.
+//
+// Couleurs des box : STRICTEMENT la palette du site (Checkpoint 0 bis) —
+// crème #F8F3E9, corail/rouge ruban #D6252E, doré #D9A441, noir #111111.
+// `sizeRatio` = côté réel / côté du XXL (130 cm) : pilote la taille du visuel
+// dans les cartes du catalogue pour que M < L < XL < XXL se voie d'un coup d'œil.
 
 export const products = [
   {
     id: "box-m",
-    image: "/images/box-m.webp",
+    image: "/images/box-m-3d.webp",
     size: "M",
+    sizeCm: 50,
+    sizeRatio: 50 / 130,
+    boxColor: "#F8F3E9",     // crème
+    ribbonColor: "#D6252E",  // ruban corail
+    accent: "coral",
     name: "Grande Box — Taille M",
     tagline: "L'effet surprise, format compact",
     price: 59,
-    color: "gold",
     description:
       "Notre plus petit format reste une vraie box géante : 50 cm de côté, pensée pour un premier effet wow sans se ruiner. Personnalisable pour n'importe quelle occasion.",
     features: ["50 x 50 x 50 cm", "Ballons et confettis inclus", "Personnalisation couleurs"],
   },
   {
     id: "box-l",
-    image: "/images/box-l.webp",
+    image: "/images/box-l-3d.webp",
     size: "L",
+    sizeCm: 70,
+    sizeRatio: 70 / 130,
+    boxColor: "#D6252E",     // corail
+    ribbonColor: "#D9A441",  // ruban doré
+    accent: "gold",
     name: "Grande Box — Taille L",
     tagline: "Le format le plus demandé",
     price: 89,
-    color: "coral",
     description:
       "Le bon compromis entre impact visuel et praticité. 70 cm de côté, largement de quoi loger ballons, confettis et une surprise centrale.",
     features: ["70 x 70 x 70 cm", "Ballons, confettis et rubans", "Message personnalisé inclus"],
   },
   {
     id: "box-xl",
-    image: "/images/box-xl.webp",
+    image: "/images/box-xl-3d.webp",
     size: "XL",
+    sizeCm: 100,
+    sizeRatio: 100 / 130,
+    boxColor: "#D9A441",     // doré
+    ribbonColor: "#111111",  // ruban noir
+    accent: "gold",
     name: "Grande Box — Taille XL",
     tagline: "Pour marquer les esprits",
     price: 129,
-    color: "forest",
     description:
       "1 mètre de côté. La box qui fait se retourner toute la salle. Idéale pour un moment fort, quelle que soit l'occasion que vous célébrez.",
     features: ["100 x 100 x 100 cm", "Contenu 100% sur-mesure", "Installation à domicile incluse"],
   },
   {
     id: "box-xxl",
-    image: "/images/box-xxl.webp",
+    image: "/images/box-xxl-3d.webp",
     size: "XXL",
+    sizeCm: 130,
+    sizeRatio: 1,
+    boxColor: "#111111",     // noir
+    ribbonColor: "#D9A441",  // ruban doré
+    accent: "noir",
     name: "Grande Box — Taille XXL",
     tagline: "L'expérience ultime",
     price: 189,
-    color: "gold",
     description:
       "Notre format signature : 1,30 m de côté. Conçue avec vous du choix des couleurs jusqu'au contenu final, pour un événement totalement unique.",
     features: ["130 x 130 x 130 cm", "Accompagnement personnalisé", "Livraison et installation incluses"],

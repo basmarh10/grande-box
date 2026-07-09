@@ -1,37 +1,45 @@
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
+import { RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
 
-// Construit une boucle de ruban « en goutte » : part du centre du nœud,
-// s'élève, s'arrondit vers l'extérieur puis revient au centre.
-// TubeGeometry le long d'une CatmullRomCurve3 fermée = boucle pleine et
-// nette, sans les artefacts des plans tordus (problème rencontré sur Spline).
+/*
+ * Boîte cadeau 3D — style « Spline » recréé en R3F :
+ * arêtes arrondies (RoundedBox), matériaux laqués (clearcoat fort),
+ * ruban satiné brillant et nœud en vraies boucles pleines.
+ * Aucune dépendance à un fichier .splinecode : tout est généré ici.
+ */
+
+// Boucle de ruban « en goutte » : part du centre du nœud, s'élève,
+// s'arrondit vers l'extérieur puis revient au centre.
 function makeBowLoopGeometry(side = 1) {
   const pts = [
-    new THREE.Vector3(0, 0, 0),
-    new THREE.Vector3(side * 0.16, 0.14, 0.02),
-    new THREE.Vector3(side * 0.3, 0.1, 0),
-    new THREE.Vector3(side * 0.3, -0.06, -0.02),
-    new THREE.Vector3(side * 0.12, -0.05, 0),
+    new THREE.Vector3(0, 0.02, 0),
+    new THREE.Vector3(side * 0.18, 0.2, 0.03),
+    new THREE.Vector3(side * 0.36, 0.14, 0),
+    new THREE.Vector3(side * 0.34, -0.05, -0.03),
+    new THREE.Vector3(side * 0.13, -0.04, 0),
   ];
-  const curve = new THREE.CatmullRomCurve3(pts, true, "catmullrom", 0.6);
-  return new THREE.TubeGeometry(curve, 48, 0.045, 12, true);
+  const curve = new THREE.CatmullRomCurve3(pts, true, "catmullrom", 0.65);
+  return new THREE.TubeGeometry(curve, 56, 0.055, 14, true);
 }
 
 // Pan de ruban qui retombe du nœud le long du couvercle.
 function makeTailGeometry(side = 1) {
   const pts = [
-    new THREE.Vector3(0, 0, 0),
-    new THREE.Vector3(side * 0.1, -0.12, 0.06),
-    new THREE.Vector3(side * 0.2, -0.26, 0.1),
+    new THREE.Vector3(0, 0.02, 0),
+    new THREE.Vector3(side * 0.12, -0.14, 0.08),
+    new THREE.Vector3(side * 0.22, -0.3, 0.12),
   ];
   const curve = new THREE.CatmullRomCurve3(pts, false, "catmullrom", 0.5);
-  return new THREE.TubeGeometry(curve, 24, 0.035, 10, false);
+  return new THREE.TubeGeometry(curve, 28, 0.04, 12, false);
 }
 
-// La boîte 3D animée : `openRef.current` (0 -> 1) fait glisser le couvercle
-// vers le haut et écarter le noeud, piloté depuis le scroll (voir ScrollScene).
-// On lit une ref (plutôt qu'une prop) pour animer à 60fps sans re-render React.
+/*
+ * `openRef.current` (0 -> 1) pilote l'ouverture : le couvercle se soulève
+ * et pivote, les boucles du nœud s'écartent. On lit une ref (pas une prop)
+ * pour animer à 60 fps sans re-render React.
+ */
 export default function GiftBox3D({
   openRef,
   boxColor = "#D6252E",
@@ -42,31 +50,36 @@ export default function GiftBox3D({
   const bowLeftRef = useRef();
   const bowRightRef = useRef();
 
-  // Géométries du noeud, construites une seule fois
   const bowLeftGeo = useMemo(() => makeBowLoopGeometry(-1), []);
   const bowRightGeo = useMemo(() => makeBowLoopGeometry(1), []);
   const tailLeftGeo = useMemo(() => makeTailGeometry(-1), []);
   const tailRightGeo = useMemo(() => makeTailGeometry(1), []);
 
+  // Carton laqué : brillant, reflets nets, léger voile nacré.
   const boxMaterial = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
         color: boxColor,
-        roughness: 0.35,
-        metalness: 0.05,
-        clearcoat: 0.3,
-        clearcoatRoughness: 0.4,
+        roughness: 0.16,
+        metalness: 0.04,
+        clearcoat: 1,
+        clearcoatRoughness: 0.08,
+        sheen: 0.4,
+        sheenColor: new THREE.Color("#ffffff"),
+        sheenRoughness: 0.5,
       }),
     [boxColor]
   );
 
+  // Ruban satin : plus métallique, très glossy.
   const ribbonMaterial = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
         color: ribbonColor,
-        roughness: 0.25,
-        metalness: 0.4,
-        clearcoat: 0.6,
+        roughness: 0.14,
+        metalness: 0.45,
+        clearcoat: 1,
+        clearcoatRoughness: 0.06,
       }),
     [ribbonColor]
   );
@@ -74,12 +87,11 @@ export default function GiftBox3D({
   useFrame(() => {
     const openProgress = openRef?.current ?? 0;
     if (lidRef.current) {
-      // le couvercle monte et pivote légèrement en s'ouvrant
-      lidRef.current.position.y = 0.55 + openProgress * 1.1;
-      lidRef.current.rotation.z = openProgress * -0.35;
+      lidRef.current.position.y = 0.62 + openProgress * 1.15;
+      lidRef.current.rotation.z = openProgress * -0.4;
+      lidRef.current.rotation.x = openProgress * 0.12;
     }
     if (bowLeftRef.current && bowRightRef.current) {
-      // les boucles s'écartent et se soulèvent légèrement à l'ouverture
       bowLeftRef.current.rotation.y = openProgress * 0.5;
       bowRightRef.current.rotation.y = openProgress * -0.5;
       bowLeftRef.current.rotation.z = openProgress * 0.35;
@@ -89,41 +101,27 @@ export default function GiftBox3D({
 
   return (
     <group position={position}>
-      {/* base */}
-      <mesh material={boxMaterial} castShadow receiveShadow>
-        <boxGeometry args={[1.6, 1.1, 1.6]} />
-      </mesh>
+      {/* base : arêtes arrondies */}
+      <RoundedBox args={[1.6, 1.1, 1.6]} radius={0.09} smoothness={5} material={boxMaterial} castShadow receiveShadow />
 
-      {/* ruban vertical + horizontal sur la base */}
-      <mesh material={ribbonMaterial} position={[0, 0.001, 0]}>
-        <boxGeometry args={[0.22, 1.12, 1.62]} />
-      </mesh>
-      <mesh material={ribbonMaterial} position={[0, 0.001, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <boxGeometry args={[0.22, 1.12, 1.62]} />
-      </mesh>
+      {/* rubans croisés sur la base */}
+      <RoundedBox args={[0.24, 1.13, 1.63]} radius={0.045} smoothness={4} material={ribbonMaterial} position={[0, 0, 0]} />
+      <RoundedBox args={[0.24, 1.13, 1.63]} radius={0.045} smoothness={4} material={ribbonMaterial} rotation={[0, Math.PI / 2, 0]} />
 
-      {/* couvercle (anime avec openProgress) */}
-      <group ref={lidRef} position={[0, 0.55, 0]}>
-        <mesh material={boxMaterial} castShadow>
-          <boxGeometry args={[1.72, 0.28, 1.72]} />
-        </mesh>
-        <mesh material={ribbonMaterial} position={[0, 0.15, 0]}>
-          <boxGeometry args={[0.26, 0.3, 1.74]} />
-        </mesh>
-        <mesh material={ribbonMaterial} position={[0, 0.15, 0]} rotation={[0, Math.PI / 2, 0]}>
-          <boxGeometry args={[0.26, 0.3, 1.74]} />
-        </mesh>
+      {/* couvercle (animé par openProgress) */}
+      <group ref={lidRef} position={[0, 0.62, 0]}>
+        <RoundedBox args={[1.74, 0.3, 1.74]} radius={0.08} smoothness={5} material={boxMaterial} castShadow />
+        <RoundedBox args={[0.28, 0.33, 1.77]} radius={0.05} smoothness={4} material={ribbonMaterial} position={[0, 0.01, 0]} />
+        <RoundedBox args={[0.28, 0.33, 1.77]} radius={0.05} smoothness={4} material={ribbonMaterial} position={[0, 0.01, 0]} rotation={[0, Math.PI / 2, 0]} />
 
-        {/* noeud en vraies boucles de ruban, s'écarte quand la boîte s'ouvre */}
-        <group position={[0, 0.32, 0]}>
-          <mesh ref={bowLeftRef} material={ribbonMaterial} geometry={bowLeftGeo} />
-          <mesh ref={bowRightRef} material={ribbonMaterial} geometry={bowRightGeo} />
-          {/* pans qui retombent */}
-          <mesh material={ribbonMaterial} geometry={tailLeftGeo} position={[0, -0.02, 0.02]} />
-          <mesh material={ribbonMaterial} geometry={tailRightGeo} position={[0, -0.02, 0.02]} />
-          {/* coeur du noeud */}
+        {/* nœud : boucles pleines + pans + cœur */}
+        <group position={[0, 0.28, 0]}>
+          <mesh ref={bowLeftRef} material={ribbonMaterial} geometry={bowLeftGeo} castShadow />
+          <mesh ref={bowRightRef} material={ribbonMaterial} geometry={bowRightGeo} castShadow />
+          <mesh material={ribbonMaterial} geometry={tailLeftGeo} position={[0, -0.02, 0.03]} />
+          <mesh material={ribbonMaterial} geometry={tailRightGeo} position={[0, -0.02, 0.03]} />
           <mesh material={ribbonMaterial}>
-            <sphereGeometry args={[0.09, 16, 16]} />
+            <sphereGeometry args={[0.105, 20, 20]} />
           </mesh>
         </group>
       </group>
