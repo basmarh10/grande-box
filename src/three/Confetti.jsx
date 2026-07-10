@@ -10,8 +10,8 @@ import * as THREE from "three";
  */
 const COLORS = ["#F0483D", "#2EC4B6", "#FFC93C", "#8E5FD1", "#FF6FA0", "#E8B84B"];
 const COUNT = 90;
-const GRAVITY = -3.2;
-const LIFE = 2.6;
+const GRAVITY = -1.5;
+const LIFE = 4.8;
 
 export default function Confetti({ fireRef, origin = [0, 0.4, 0] }) {
   const meshRef = useRef();
@@ -47,9 +47,9 @@ export default function Confetti({ fireRef, origin = [0, 0.4, 0] }) {
         const angle = Math.random() * Math.PI * 2;
         const spread = 0.6 + Math.random() * 1.4;
         p.vel.set(
-          Math.cos(angle) * spread,
-          2.2 + Math.random() * 2.4,
-          Math.sin(angle) * spread
+          Math.cos(angle) * spread * 0.8,
+          1.7 + Math.random() * 1.7,
+          Math.sin(angle) * spread * 0.8
         );
         p.age = 0;
       });
@@ -67,7 +67,9 @@ export default function Confetti({ fireRef, origin = [0, 0.4, 0] }) {
         p.age += delta;
         p.vel.y += GRAVITY * delta;
         // traînée d'air : les confettis ralentissent et papillonnent
-        p.vel.multiplyScalar(1 - 0.9 * delta);
+        p.vel.multiplyScalar(1 - 0.75 * delta);
+        // papillonnement latéral pendant la descente
+        p.pos.x += Math.sin(p.age * 3 + p.rotSpeed) * 0.12 * delta;
         p.pos.addScaledVector(p.vel, delta);
         const fade = 1 - Math.max(0, (p.age - LIFE * 0.6) / (LIFE * 0.4));
         dummy.position.copy(p.pos);

@@ -23,23 +23,34 @@ import { scrollState } from "../lib/scrollProgress";
  * aucun ballon ne touche jamais la boîte ni le couvercle, aucun ne passe
  * sur le titre ou les CTA.
  */
+/*
+ * 15 ballons — toutes les zones de la section sont habitées :
+ * arc au-dessus du titre, coin haut-droit (près du Panier), toute la
+ * marge gauche (4 hauteurs), bande basse sous les boutons et sous la
+ * boîte. Coordonnées relatives au groupe (x=2.55 monde).
+ * Exclusion vérifiée sur tout le cycle : flottement ±0.16, montée +0.5,
+ * couvercle (dérive 0.6 → pointes à ~1.0 rel / y 2.4-3.2) — aucun contact.
+ */
 const BALLOONS = [
-  // arc au-dessus du titre, du coin gauche vers la boîte
-  { color: "#FF6FA0", baseX: -4.4, baseY: 2.5, baseZ: -2.0, speed: 1.15, offset: 7.0, scale: 0.2 },
-  { color: "#8E5FD1", baseX: -3.4, baseY: 1.95, baseZ: -1.6, speed: 1.1, offset: 2.1, scale: 0.24 },
-  { color: "#FFC93C", baseX: -2.4, baseY: 2.45, baseZ: -1.3, speed: 1.0, offset: 4.5, scale: 0.28 },
-  { color: "#2EC4B6", baseX: -1.5, baseY: 2.0, baseZ: -0.6, speed: 0.95, offset: 1.3, scale: 0.4 },
-  { color: "#F0483D", baseX: -0.65, baseY: 2.4, baseZ: -0.9, speed: 1.2, offset: 0.0, scale: 0.34 },
-  { color: "#FFFDF8", baseX: 0.15, baseY: 2.85, baseZ: -1.6, speed: 1.05, offset: 3.9, scale: 0.22 },
-  // marge gauche de l'écran (avant le début du texte)
-  { color: "#FFFDF8", baseX: -5.0, baseY: 1.2, baseZ: -1.2, speed: 1.0, offset: 6.1, scale: 0.26 },
-  { color: "#4A1942", baseX: -5.2, baseY: 0.1, baseZ: -0.6, speed: 0.85, offset: 7.8, scale: 0.3 },
-  // bord droit de l'écran, sous la trajectoire du couvercle
-  { color: "#E8B84B", baseX: 1.45, baseY: 0.25, baseZ: 0.6, speed: 1.15, offset: 4.6, scale: 0.36 },
-  { color: "#FF6FA0", baseX: 1.6, baseY: 1.15, baseZ: -0.5, speed: 0.9, offset: 5.4, scale: 0.28 },
-  // premier plan, posés devant la boîte (profondeur)
-  { color: "#2EC4B6", baseX: -1.35, baseY: -0.15, baseZ: 1.3, speed: 1.25, offset: 6.2, scale: 0.3 },
-  { color: "#FFC93C", baseX: -1.6, baseY: -0.35, baseZ: 1.6, speed: 0.9, offset: 8.2, scale: 0.26 },
+  // arc au-dessus du titre, de gauche à droite
+  { color: "#FF6FA0", baseX: -5.15, baseY: 2.5, baseZ: -2.0, speed: 1.15, offset: 7.0, scale: 0.2 },
+  { color: "#8E5FD1", baseX: -4.15, baseY: 1.95, baseZ: -1.6, speed: 1.1, offset: 2.1, scale: 0.24 },
+  { color: "#FFC93C", baseX: -3.15, baseY: 2.45, baseZ: -1.3, speed: 1.0, offset: 4.5, scale: 0.28 },
+  { color: "#2EC4B6", baseX: -2.25, baseY: 2.0, baseZ: -0.6, speed: 0.95, offset: 1.3, scale: 0.4 },
+  { color: "#F0483D", baseX: -1.4, baseY: 2.4, baseZ: -0.9, speed: 1.2, offset: 0.0, scale: 0.34 },
+  { color: "#FFFDF8", baseX: -0.6, baseY: 2.85, baseZ: -1.6, speed: 1.05, offset: 3.9, scale: 0.22 },
+  // coin haut-droit, près du bouton Panier
+  { color: "#E8B84B", baseX: 1.15, baseY: 2.85, baseZ: -1.2, speed: 0.9, offset: 5.4, scale: 0.24 },
+  // toute la marge gauche (4 hauteurs)
+  { color: "#F0483D", baseX: -5.7, baseY: 2.3, baseZ: -1.5, speed: 1.05, offset: 9.3, scale: 0.22 },
+  { color: "#FFFDF8", baseX: -5.75, baseY: 1.2, baseZ: -1.2, speed: 1.0, offset: 6.1, scale: 0.26 },
+  { color: "#4A1942", baseX: -5.95, baseY: 0.1, baseZ: -0.6, speed: 0.85, offset: 7.8, scale: 0.3 },
+  { color: "#2EC4B6", baseX: -5.9, baseY: -0.9, baseZ: 0.3, speed: 1.1, offset: 10.2, scale: 0.28 },
+  // bande basse : sous les boutons et sous la boîte (premier plan)
+  { color: "#FFC93C", baseX: -1.05, baseY: -1.15, baseZ: 1.2, speed: 0.9, offset: 8.2, scale: 0.26 },
+  { color: "#8E5FD1", baseX: -0.05, baseY: -1.3, baseZ: 1.4, speed: 1.25, offset: 6.2, scale: 0.24 },
+  { color: "#FF6FA0", baseX: 0.45, baseY: -1.35, baseZ: 1.5, speed: 1.0, offset: 11.1, scale: 0.26 },
+  { color: "#2EC4B6", baseX: -1.85, baseY: -1.2, baseZ: 1.3, speed: 1.2, offset: 12.0, scale: 0.3 },
 ];
 
 function clamp01(v) { return Math.min(1, Math.max(0, v)); }
@@ -57,8 +68,10 @@ function SceneContent() {
     const p = scrollState.progress; // 0 -> 1 sur toute la page
     const t = state.clock.elapsedTime;
 
-    // Phase 1 (0.02 -> 0.16) : la boîte s'ouvre
-    const openProgress = remap(p, 0.02, 0.16);
+    // Phase 1 (0.03 -> 0.34) : la boîte s'ouvre — plage volontairement
+    // LONGUE pour que la révélation (confettis, mini-cadeaux) soit posée
+    // et qu'on ait le temps d'en profiter.
+    const openProgress = remap(p, 0.03, 0.34);
     openRef.current = openProgress;
 
     // Confettis : un seul burst, au moment où le couvercle se soulève
@@ -68,26 +81,26 @@ function SceneContent() {
     }
     if (openProgress < 0.05) confettiDone.current = false;
 
-    // Phase 2 (0.1 -> 0.4) : la scène glisse à gauche, la caméra recule.
-    // Au repos la boîte est à droite du titre (x=1.55), jamais dessus.
-    const shift = remap(p, 0.1, 0.4);
+    // Phase 2 (0.30 -> 0.55) : la scène glisse à gauche, la caméra recule
+    // — ne démarre qu'une fois la révélation presque terminée.
+    const shift = remap(p, 0.30, 0.55);
     if (groupRef.current) {
-      groupRef.current.position.x = THREE.MathUtils.lerp(1.8, -1.6, shift);
+      groupRef.current.position.x = THREE.MathUtils.lerp(2.38, -1.6, shift);
     }
-    camera.position.z = THREE.MathUtils.lerp(5.5, 7.2, shift);
+    camera.position.z = THREE.MathUtils.lerp(6.2, 7.5, shift);
     camera.position.y = THREE.MathUtils.lerp(0.5, 1.1, shift);
     camera.lookAt(0, 0, 0);
 
     // Phase 3 (0.55 -> 0.82) : tout s'estompe avant catalogue/CTA
-    const fade = 1 - remap(p, 0.55, 0.82);
+    const fade = 1 - remap(p, 0.62, 0.85);
     if (groupRef.current) {
-      groupRef.current.scale.setScalar(THREE.MathUtils.lerp(0.7, 1, fade));
+      groupRef.current.scale.setScalar(0.9 * THREE.MathUtils.lerp(0.7, 1, fade));
       groupRef.current.visible = fade > 0.01;
     }
 
     // Ballons : flottement PERMANENT (portance + houle + balancement),
     // amplifié quand la boîte s'ouvre, envol en phase 2.
-    const flyAway = remap(p, 0.16, 0.4);
+    const flyAway = remap(p, 0.32, 0.55);
     balloonRefs.current.forEach((ref, i) => {
       if (!ref) return;
       const b = BALLOONS[i];
@@ -104,7 +117,7 @@ function SceneContent() {
 
   return (
     <group ref={groupRef}>
-      <GiftBox3D openRef={openRef} boxColor="#F0483D" ribbonColor="#E8B84B" position={[0, -0.2, 0]} />
+      <GiftBox3D openRef={openRef} boxColor="#F0483D" ribbonColor="#E8B84B" lidDrift={0.6} position={[0, -0.2, 0]} />
       {/* contenu intérieur (mini-cadeaux, rubans, sparkles) — composant
           partagé avec la fiche produit, révélé à l'ouverture */}
       <BoxContents openRef={openRef} position={[0, 0.3, 0]} />
@@ -130,7 +143,7 @@ export default function ScrollScene() {
           scène — c'est ce qui permet d'éclater les ballons au clic. */}
       <Canvas
         shadows
-        camera={{ position: [0, 0.5, 5.5], fov: 42 }}
+        camera={{ position: [0, 0.5, 6.2], fov: 42 }}
         dpr={[1, 1.8]}
         eventSource={document.body}
         eventPrefix="client"
