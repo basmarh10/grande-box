@@ -3,40 +3,45 @@ import gsap from "gsap";
 import "./IntroBalloons.css";
 
 /*
- * Écran d'intro « grands ballons » — esprit effet iMessage « Ballons » :
- * au tout premier chargement, de gros ballons colorés montent et remplissent
- * l'écran, puis l'overlay se fond vers la home. GSAP uniquement (pas de
- * Framer Motion).
+ * Écran d'intro : le titre du site apparaît au milieu d'un NUAGE de ballons
+ * colorés qui montent et remplissent l'écran (esprit effet iMessage
+ * « Ballons »), puis fondu de transition vers la home. GSAP uniquement.
  *
- * - Une seule fois par navigateur : flag `localStorage` (survit à la
- *   fermeture de l'onglet, contrairement à sessionStorage).
- * - QA : `?intro=1` dans l'URL force l'intro sans vider le localStorage.
- * - Passable au clic/tap à tout moment (accéléré, jamais coupé net).
- * - `prefers-reduced-motion` : simple fondu court, sans ballons.
+ * - Une seule fois par navigateur (`localStorage`). Le flag n'est posé
+ *   qu'à la FIN de l'animation : si un premier chargement est interrompu
+ *   (onglet fermé, erreur), l'intro rejouera à la visite suivante.
+ * - QA : `?intro=1` dans l'URL force l'intro sans toucher au localStorage.
+ * - Clic/tap : accélère jusqu'à la fin (jamais de coupure brute).
+ * - `prefers-reduced-motion` : fondu court sans ballons.
  */
 
 const STORAGE_KEY = "grandebox_intro_seen";
 
-// Composition fixe (pas d'aléatoire) : deux vagues croisées qui couvrent
-// toute la largeur, tailles variées, palette v3.
-const BALLOONS = [
-  { color: "#F0483D", left: "6%",  size: 190, delay: 0.0,  drift: 40,  dur: 3.1 },
-  { color: "#2EC4B6", left: "16%", size: 150, delay: 0.25, drift: -30, dur: 2.8 },
-  { color: "#FFC93C", left: "26%", size: 220, delay: 0.1,  drift: 25,  dur: 3.3 },
-  { color: "#8E5FD1", left: "36%", size: 160, delay: 0.35, drift: -45, dur: 2.9 },
-  { color: "#FF6FA0", left: "46%", size: 200, delay: 0.05, drift: 35,  dur: 3.2 },
-  { color: "#E8B84B", left: "56%", size: 145, delay: 0.3,  drift: -25, dur: 2.7 },
-  { color: "#4A1942", left: "66%", size: 210, delay: 0.15, drift: 30,  dur: 3.4 },
-  { color: "#F0483D", left: "76%", size: 155, delay: 0.4,  drift: -35, dur: 2.8 },
-  { color: "#2EC4B6", left: "86%", size: 185, delay: 0.2,  drift: 45,  dur: 3.1 },
-  { color: "#FF6FA0", left: "11%", size: 120, delay: 0.55, drift: -20, dur: 2.6 },
-  { color: "#FFC93C", left: "31%", size: 110, delay: 0.65, drift: 30,  dur: 2.5 },
-  { color: "#8E5FD1", left: "51%", size: 130, delay: 0.5,  drift: -30, dur: 2.7 },
-  { color: "#E8B84B", left: "71%", size: 115, delay: 0.7,  drift: 20,  dur: 2.5 },
-  { color: "#FFFDF8", left: "91%", size: 125, delay: 0.6,  drift: -40, dur: 2.6 },
-  { color: "#F0483D", left: "41%", size: 105, delay: 0.75, drift: 25,  dur: 2.4 },
-  { color: "#2EC4B6", left: "61%", size: 100, delay: 0.8,  drift: -20, dur: 2.4 },
-];
+// Assombrit un hex (%) — remplace color-mix() pour compatibilité maximale.
+function shade(hex, pct) {
+  const n = parseInt(hex.slice(1), 16);
+  const f = 1 - pct;
+  const r = Math.round(((n >> 16) & 255) * f);
+  const g = Math.round(((n >> 8) & 255) * f);
+  const b = Math.round((n & 255) * f);
+  return `rgb(${r},${g},${b})`;
+}
+
+const PALETTE = ["#F0483D", "#2EC4B6", "#FFC93C", "#8E5FD1", "#FF6FA0", "#E8B84B", "#4A1942", "#FFFDF8"];
+
+// Nuage dense : 28 ballons répartis sur toute la largeur, 3 vagues
+// entrelacées, tailles et rythmes variés (composition fixe, pas d'aléatoire).
+const BALLOONS = Array.from({ length: 28 }, (_, i) => {
+  const wave = i % 3;
+  return {
+    color: PALETTE[i % PALETTE.length],
+    left: `${(i * 3.6 + (wave === 1 ? 1.8 : 0)) % 96}%`,
+    size: 100 + ((i * 37) % 130),
+    delay: wave * 0.35 + ((i * 13) % 10) * 0.06,
+    drift: ((i % 2 === 0 ? 1 : -1) * (20 + ((i * 17) % 35))),
+    dur: 2.6 + ((i * 23) % 12) * 0.09,
+  };
+});
 
 function shouldShowIntro() {
   if (typeof window === "undefined") return false;
@@ -53,24 +58,23 @@ export default function IntroBalloons() {
   useEffect(() => {
     if (!visible || !rootRef.current) return;
 
-    window.localStorage.setItem(STORAGE_KEY, "1");
     document.body.style.overflow = "hidden";
-
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const root = rootRef.current;
     const balloons = root.querySelectorAll(".ib-balloon");
     const title = root.querySelector(".ib-title");
 
-    const tl = gsap.timeline({
-      onComplete: () => {
-        document.body.style.overflow = "";
-        setVisible(false);
-      },
-    });
+    const finish = () => {
+      // flag posé seulement quand l'intro s'est jouée jusqu'au bout
+      window.localStorage.setItem(STORAGE_KEY, "1");
+      document.body.style.overflow = "";
+      setVisible(false);
+    };
+
+    const tl = gsap.timeline({ onComplete: finish });
     tlRef.current = tl;
 
     if (reduceMotion) {
-      // pas d'animation de ballons : titre bref, fondu doux
       tl.fromTo(title, { opacity: 0 }, { opacity: 1, duration: 0.3 })
         .to(root, { opacity: 0, duration: 0.5 }, "+=0.8");
       return () => { tl.kill(); document.body.style.overflow = ""; };
@@ -79,16 +83,16 @@ export default function IntroBalloons() {
     tl.fromTo(
       title,
       { opacity: 0, scale: 0.92 },
-      { opacity: 1, scale: 1, duration: 0.7, ease: "power2.out" },
-      0
+      { opacity: 1, scale: 1, duration: 0.8, ease: "power2.out" },
+      0.15
     );
     balloons.forEach((el, i) => {
       const b = BALLOONS[i];
       tl.fromTo(
         el,
-        { y: "110vh", x: 0, rotation: b.drift > 0 ? -6 : 6 },
+        { y: "112vh", x: 0, rotation: b.drift > 0 ? -6 : 6 },
         {
-          y: "-130vh",
+          y: "-135vh",
           x: b.drift,
           rotation: b.drift > 0 ? 5 : -5,
           duration: b.dur,
@@ -97,17 +101,17 @@ export default function IntroBalloons() {
         b.delay
       );
     });
-    // fondu de sortie pendant que les derniers ballons finissent de monter
-    tl.to(title, { opacity: 0, y: -24, duration: 0.5, ease: "power2.in" }, 2.6)
-      .to(root, { opacity: 0, duration: 0.7, ease: "power2.inOut" }, 2.9);
+    // transition de sortie : le titre s'élève, l'overlay fond vers la home
+    tl.to(title, { opacity: 0, y: -28, duration: 0.55, ease: "power2.in" }, 3.0)
+      .to(root, { opacity: 0, duration: 0.75, ease: "power2.inOut" }, 3.3);
 
     return () => { tl.kill(); document.body.style.overflow = ""; };
   }, [visible]);
 
   if (!visible) return null;
 
-  // Clic/tap : on accélère la timeline (fin naturelle, jamais de coupure brute)
-  const skip = () => { tlRef.current?.timeScale(3.2); };
+  // Clic/tap : on accélère la timeline (fin naturelle, transition conservée)
+  const skip = () => { tlRef.current?.timeScale(3.5); };
 
   return (
     <div
@@ -130,6 +134,8 @@ export default function IntroBalloons() {
             width: b.size,
             height: b.size * 1.18,
             "--ib-color": b.color,
+            "--ib-dark": shade(b.color, 0.28),
+            "--ib-knot": shade(b.color, 0.2),
           }}
         >
           <span className="ib-knot" />

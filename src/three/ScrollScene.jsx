@@ -51,6 +51,19 @@ const BALLOONS = [
   { color: "#8E5FD1", baseX: -0.05, baseY: -1.3, baseZ: 1.4, speed: 1.25, offset: 6.2, scale: 0.24 },
   { color: "#FF6FA0", baseX: 0.45, baseY: -1.35, baseZ: 1.5, speed: 1.0, offset: 11.1, scale: 0.26 },
   { color: "#2EC4B6", baseX: -1.85, baseY: -1.2, baseZ: 1.3, speed: 1.2, offset: 12.0, scale: 0.3 },
+  // couche lointaine « nuage » : petits ballons en altitude sur toute la
+  // largeur (z très en retrait — ils passent au-dessus du texte sans gêner)
+  { color: "#FFC93C", baseX: -5.9, baseY: 2.6, baseZ: -3.5, speed: 0.8, offset: 13.1, scale: 0.18 },
+  { color: "#F0483D", baseX: -4.2, baseY: 3.0, baseZ: -4.0, speed: 0.95, offset: 14.0, scale: 0.18 },
+  { color: "#8E5FD1", baseX: -2.4, baseY: 2.9, baseZ: -3.8, speed: 0.85, offset: 15.2, scale: 0.16 },
+  { color: "#FF6FA0", baseX: -0.9, baseY: 3.2, baseZ: -4.4, speed: 1.0, offset: 16.1, scale: 0.18 },
+  { color: "#2EC4B6", baseX: 0.8, baseY: 3.0, baseZ: -4.0, speed: 0.9, offset: 17.3, scale: 0.16 },
+  // combleurs de vides (mi-hauteurs et air à droite, loin derrière la boîte)
+  { color: "#E8B84B", baseX: -3.3, baseY: 1.35, baseZ: -2.4, speed: 1.05, offset: 18.2, scale: 0.2 },
+  { color: "#FFFDF8", baseX: -1.5, baseY: 1.35, baseZ: -2.6, speed: 1.15, offset: 19.0, scale: 0.2 },
+  { color: "#8E5FD1", baseX: 1.9, baseY: 1.8, baseZ: -3.2, speed: 0.9, offset: 20.4, scale: 0.18 },
+  { color: "#F0483D", baseX: 2.2, baseY: 0.6, baseZ: -2.8, speed: 1.1, offset: 21.3, scale: 0.2 },
+  { color: "#FFC93C", baseX: -0.38, baseY: -1.05, baseZ: 1.6, speed: 1.0, offset: 22.2, scale: 0.22 },
 ];
 
 function clamp01(v) { return Math.min(1, Math.max(0, v)); }
