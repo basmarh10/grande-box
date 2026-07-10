@@ -49,7 +49,7 @@
       rgba(255, 255, 255, 0.85) 0%,
       rgba(255, 255, 255, 0.28) 18%,
       var(--ib-color) 52%,
-      color-mix(in srgb, var(--ib-color) 72%, #000) 100%);
+      var(--ib-dark) 100%);
   box-shadow: inset -14px -18px 30px rgba(0, 0, 0, 0.12);
   will-change: transform;
 }
@@ -63,7 +63,7 @@
   height: 0;
   border-left: 9px solid transparent;
   border-right: 9px solid transparent;
-  border-bottom: 12px solid color-mix(in srgb, var(--ib-color) 80%, #000);
+  border-bottom: 12px solid var(--ib-knot);
 }
 
 .ib-string {

@@ -12,7 +12,6 @@ import * as THREE from "three";
  * - papier de soie,
  * - mini-cadeaux « lucioles » AVEC nœud + ruban (comme la grande boîte),
  *   qui sortent un à un, lentement, puis FLOTTENT au-dessus de la boîte,
- * - boucles de ruban qui dépassent,
  * - sparkles qui captent la lumière.
  */
 
@@ -36,39 +35,26 @@ function MiniGift({ size, color, ribbon }) {
     () => new THREE.MeshPhysicalMaterial({ color: ribbon, roughness: 0.15, metalness: 0.35, clearcoat: 1 }),
     [ribbon]
   );
-  const loopR = size * 0.19;
   return (
     <group>
       <RoundedBox args={[size, size, size]} radius={size * 0.14} smoothness={4} material={boxMat} castShadow />
       {/* ruban croisé */}
       <RoundedBox args={[size * 0.18, size * 1.03, size * 1.03]} radius={size * 0.05} smoothness={3} material={ribMat} />
       <RoundedBox args={[size * 0.18, size * 1.03, size * 1.03]} radius={size * 0.05} smoothness={3} material={ribMat} rotation={[0, Math.PI / 2, 0]} />
-      {/* nœud : deux boucles inclinées + cœur */}
-      <group position={[0, size * 0.62, 0]}>
-        <mesh material={ribMat} position={[-loopR * 0.9, 0, 0]} rotation={[Math.PI / 2, 0, 0.55]}>
-          <torusGeometry args={[loopR, size * 0.055, 10, 24]} />
+      {/* nœud posé À PLAT sur le dessus : deux boucles basses (ellipsoïdes
+          légèrement relevés vers l'extérieur) + cœur — jamais sur le côté */}
+      <group position={[0, size * 0.56, 0]}>
+        <mesh material={ribMat} position={[-size * 0.17, size * 0.05, 0]} rotation={[0, 0, 0.35]} scale={[size * 0.2, size * 0.09, size * 0.13]}>
+          <sphereGeometry args={[1, 16, 12]} />
         </mesh>
-        <mesh material={ribMat} position={[loopR * 0.9, 0, 0]} rotation={[Math.PI / 2, 0, -0.55]}>
-          <torusGeometry args={[loopR, size * 0.055, 10, 24]} />
+        <mesh material={ribMat} position={[size * 0.17, size * 0.05, 0]} rotation={[0, 0, -0.35]} scale={[size * 0.2, size * 0.09, size * 0.13]}>
+          <sphereGeometry args={[1, 16, 12]} />
         </mesh>
-        <mesh material={ribMat}>
-          <sphereGeometry args={[size * 0.09, 14, 14]} />
+        <mesh material={ribMat} position={[0, size * 0.06, 0]} scale={[size * 0.09, size * 0.075, size * 0.09]}>
+          <sphereGeometry args={[1, 14, 14]} />
         </mesh>
       </group>
     </group>
-  );
-}
-
-// Boucle de ruban qui dépasse du papier de soie (demi-tore incliné).
-function RibbonLoop({ position, rotation, scale = 1, color = "#E8B84B" }) {
-  const mat = useMemo(
-    () => new THREE.MeshPhysicalMaterial({ color, roughness: 0.15, metalness: 0.4, clearcoat: 1, side: THREE.DoubleSide }),
-    [color]
-  );
-  return (
-    <mesh position={position} rotation={rotation} scale={scale} material={mat}>
-      <torusGeometry args={[0.22, 0.045, 12, 32, Math.PI]} />
-    </mesh>
   );
 }
 
@@ -126,10 +112,6 @@ export default function BoxContents({ openRef, position = [0, 0, 0] }) {
           <MiniGift size={g.size} color={g.color} ribbon={g.ribbon} />
         </group>
       ))}
-
-      {/* boucles de ruban qui dépassent */}
-      <RibbonLoop position={[-0.15, 0.28, -0.35]} rotation={[0.3, 0.6, 0.2]} />
-      <RibbonLoop position={[0.5, 0.22, 0.3]} rotation={[-0.2, -0.4, -0.3]} scale={0.8} color="#FF6FA0" />
 
       {/* sparkles : points de lumière qui scintillent au-dessus du contenu */}
       <Sparkles count={42} scale={[1.5, 1.2, 1.5]} position={[0, 0.6, 0]} size={3.2} speed={0.45} color="#FFE9A8" />
